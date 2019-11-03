@@ -1,4 +1,7 @@
-@if (Auth::user()->can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getRoleClass()) || Auth::user()->can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionClass()))
+@if ((Auth::user()->can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getRoleClass()) &&
+!config('nova_permissions.menu.roles.hide')
+) || (Auth::user()->can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionClass()) &&
+!config('nova_permissions.menu.permissions.hide')))
     <h3 class="flex items-center font-normal text-white mb-6 text-base no-underline">
         <svg class="sidebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="var(--sidebar-icon)"
@@ -11,31 +14,35 @@
 
     <ul class="list-reset mb-8">
 
-        @can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getRoleClass())
-        <li class="leading-wide mb-4 text-sm">
-            <router-link :to="{
-                name: 'index',
-                params: {
-                    resourceName: 'roles'
-                }
-            }" class="text-white ml-8 no-underline dim">
-                @lang('nova-permission-tool::resources.Roles')
-            </router-link>
-        </li>
-        @endcan
+        @if (!config('nova_permissions.menu.roles.hide'))
+            @can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getRoleClass())
+            <li class="leading-wide mb-4 text-sm">
+                <router-link :to="{
+                    name: 'index',
+                    params: {
+                        resourceName: 'roles'
+                    }
+                }" class="text-white ml-8 no-underline dim">
+                    @lang('nova-permission-tool::resources.Roles')
+                </router-link>
+            </li>
+            @endcan
+        @endif
 
-        @can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionClass())
-        <li class="leading-wide mb-4 text-sm">
-            <router-link :to="{
-                name: 'index',
-                params: {
-                    resourceName: 'permissions'
-                }
-            }" class="text-white ml-8 no-underline dim">
-                @lang('nova-permission-tool::resources.Permissions')
-            </router-link>
-        </li>
-        @endcan
+        @if (!config('nova_permissions.menu.permissions.hide'))
+            @can('viewAny', app(\Spatie\Permission\PermissionRegistrar::class)->getPermissionClass())
+            <li class="leading-wide mb-4 text-sm">
+                <router-link :to="{
+                    name: 'index',
+                    params: {
+                        resourceName: 'permissions'
+                    }
+                }" class="text-white ml-8 no-underline dim">
+                    @lang('nova-permission-tool::resources.Permissions')
+                </router-link>
+            </li>
+            @endcan
+        @endif
 
     </ul>
 @endif
